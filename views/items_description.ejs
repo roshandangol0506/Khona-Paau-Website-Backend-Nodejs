@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Description</title>
+    <link rel="stylesheet" href="/css/popup_mycart.css">
+</head>
+<body>
+    <%- include('./partials/header') %>
+    <main>
+        <div id="service" class="section py-5 bg-light text-dark">
+            <div class="container">
+              <h2 class="topic mb-4 text-center">Description</h2>
+              <div class="row align-items-center">
+                <!-- Left Column: Details -->
+                <div class="col-md-6">
+                  <% if (locals.service) { %>
+                  <!-- Name and Subtitle -->
+                  <div>
+                    <h3 class="text-primary"><%= service.name %></h3>
+                    <p class="text-muted"><em><%= service.subtitle %></em></p>
+                  </div>
+                  
+                  <!-- Description -->
+                  <div class="my-4">
+                    <p><%= service.description %></p>
+                  </div>
+
+                  <div class="my-4">
+                    <p>Brand: Roshan Dangol</p>
+                  </div>
+                  
+                  <!-- Amount and Button -->
+                  <div>
+                    <h4 class="text-success">Amount: <%= service.amount %></h4>
+                    <form id="cartForm-<%= service.id %>" action="/uploadmycart" method="POST" onsubmit="handleCartFormSubmit(event, '<%= service.id %>')">
+                          <% if (user) { %>
+                          <input type="hidden" name="id" value="<%= service.id %>">
+                          <input type="hidden" name="user" value="<%= user._id %>">
+                          <button type="submit" class="btn btn-primary">Add to Cart</button>
+                          <% } else { %>
+                          <a href="login" class="btn btn-primary">Add to Cart</a>
+                          <% } %>
+                        </form>
+                        <div id="popupMessage" class="popup-message">
+                            Added to Cart!
+                          </div>  
+                    <a href="products" class="btn btn-secondary mt-3">Back to Services</a>
+                  </div>
+                  <% } %>
+                </div>
+          
+                <!-- Right Column: Image -->
+                <div class="col-md-6 text-center">
+                  <% if (locals.service && service.photo) { %>
+                  <img src="/items/<%= path.basename(service.photo) %>" class="img-fluid rounded shadow" alt="<%= service.name %>">
+                  <% } else { %>
+                  <img src="/images/placeholder.png" class="img-fluid rounded shadow" alt="No image available">
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+    </main>
+    <%- include('./partials/footer') %>
+</body>
+</html>
+<script src="/js/popup_mycart.js"></script>

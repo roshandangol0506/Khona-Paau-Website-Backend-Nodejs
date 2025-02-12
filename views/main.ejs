@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Website</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Lora:wght@400;600&family=Quicksand:wght@400;600&family=Nunito:wght@400;600&family=Playfair+Display:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/popup_mycart.css">
+</head>
+
+<body>
+    <%- include('./partials/header') %>
+  <main>
+
+    <!-- Home Section -->
+    <section id="home" class="d-flex align-items-center text-center text-light">
+        <div class="container">
+            <h1 class="display-4">Welcome</h1>
+            <p class="lead">Brighten your day with a brighter smile!</p>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="products" class="section py-5 bg-white text-dark">
+        <div class="container text-center">
+            <h2 class="topic mb-4">Our Products</h2>
+            <div class="row">
+                <% if (locals.service) { %>
+                    <% service.forEach((service, index) => { %>
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                        <div class="product-card shadow-sm rounded p-3">
+                            <!-- Image -->
+                            <a href="/description?id=<%= service.id %>">
+                                <img src="/items/<%= path.basename(service.photo) %>" class="img-fluid rounded mb-3 product-image">
+                            </a>
+                            <!-- Name and Details -->
+                            <p class="product-name">
+                                <a href="/description?id=<%= service.id %>" class="text-dark">
+                                    <strong><%= service.name %></strong>
+                                </a>
+                            </p>
+                            <p class="product-subtitle text-muted"><%= service.subtitle %></p>
+                            <p class="product-price text-primary">$<%= service.amount %></p>
+                            
+                            <!-- Add to Cart Button -->
+                            <form
+                            id="cartForm-<%= service.id %>"
+                            action="/uploadmycart"
+                            method="POST"
+                            onsubmit="handleCartFormSubmit(event, '<%= service.id %>')"
+                            >
+                            <% if (user) { %>
+                            <input type="hidden" name="id" value="<%= service.id %>">
+                            <input type="hidden" name="user" value="<%= user._id %>">
+                            <button type="submit" class="btn btn-primary btn-block add-to-cart-btn">
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
+                            <% } else { %>
+                            <a href="login" class="btn btn-secondary btn-block">Login to Add</a>
+                            <% } %>
+                            </form>
+                            <div id="popupMessage" class="popup-message">
+                                Added to Cart!
+                            </div>  
+                        </div>
+                    </div>
+                    <% }) %>
+                <% } %>
+            </div>
+            <p class="button mt-4">
+                <p class="button"><a href="products" class="nav-join">View More</a></p>
+            </p>
+        </div>
+    </section>
+    
+
+    <!-- About Section -->
+    <section id="about" class="section bg-light py-5">
+        <div class="container text-center">
+            <h2 class="topic mb-4">About Us</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <img src="views/about-us.png" alt="About Us" class="img-fluid rounded">
+                </div>
+                <div class="col-md-2">
+
+                </div>
+                <div class="col-md-6">
+                    <p class="lead">We are dedicated to helping you achieve your fitness goals. With professional
+                        trainers, state-of-the-art equipment, and a friendly environment, we're here to make your
+                        fitness journey enjoyable and effective.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="team" class="section py-5 bg-light text-center">
+        <h2 class="topic mb-4">Team</h2>
+        <div class="container">
+
+          <div class="slider-container">
+            <div class="arrow left-arrow">←</div>
+            <div class="team-slider">
+              <% if (locals.team) { %>
+                <% team.forEach((team, index) => { %>
+                  <div class="team-card">
+                    <div class="image-container">
+                      <!-- Image -->
+                      <img src="/uploads/<%= path.basename(team.teamimage) %>" alt="Team Member" class="img-fluid rounded">
+                      <!-- Name and Profession -->
+                      <div class="info">
+                        <p class="name"><%= team.name %></p>
+                        <p class="profession"><%= team.profession %></p>
+                      </div>
+                    </div>
+                  </div>
+                <% }) %>
+              <% } %>
+            </div>
+            <div class="arrow right-arrow">→</div>
+          </div>
+        </div>
+      </section>
+      
+    
+
+
+    <section id="review" class="section py-5">
+        <div class="container text-center">
+            <h2 class="topic mb-4">What our Clients have to say</h2>
+    
+          <!-- Slider Content -->
+            <div class="slider">
+                <!-- Slide 1 -->
+                <div class="row slide">
+                    <% review.slice(0, 3).forEach((rev) => { %>
+                        <div class="col-md-4 mb-4">
+                            <div class="review-box p-4 text-start position-relative">
+                                <!-- Profile Image -->
+                                <img src="/reviews/<%= path.basename(rev.profilepic) %>" 
+                                     class="review-image rounded-circle" 
+                                     alt="<%= rev.name %>'s picture">
+                                <!-- Name -->
+                                <h5 class="review-name"><%= rev.name %></h5>
+                                <hr class="blue-line">
+                                <!-- Review Text -->
+                                <p class="review-text"><%= rev.review %></p>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+    
+                <!-- Slide 2 -->
+                <div class="row slide mt-4 mb-4">
+                    <% review.slice(3, 6).forEach((rev) => { %>
+                        <div class="col-md-4 mb-4">
+                            <div class="review-box p-4 text-start position-relative">
+                                <!-- Profile Image -->
+                                <img src="/reviews/<%= path.basename(rev.profilepic) %>" 
+                                     class="review-image rounded-circle" 
+                                     alt="<%= rev.name %>'s picture">
+                                <!-- Name -->
+                                <h5 class="review-name"><%= rev.name %></h5>
+                                <hr class="blue-line">
+                                <!-- Review Text -->
+                                <p class="review-text"><%= rev.review %></p>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+                <!-- Slider Controls -->
+            
+            </div>
+            <div class="slider-controls mb-3">
+                <input type="radio" name="slider" id="slide1" checked>
+                <input type="radio" name="slider" id="slide2">
+                <label for="slide1" class="dot"></label>
+                <label for="slide2" class="dot"></label>
+            </div>
+        </div>
+    </section>
+    
+    
+    
+
+    <section id="socialmedia" class="section py-5 bg-light text-center">
+        <div class="iframe-container">
+            <!-- Facebook iframe -->
+            <iframe
+                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fsiddhi.smiles.dental&tabs=timeline&width=340&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId"
+                width="340" height="500" style="border:none;overflow:hidden" scrolling="no" frameborder="0"
+                allowfullscreen="true"
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+
+            <!-- Google Maps iframe -->
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3531.949141308665!2d85.30698011113068!3d27.71885652488415!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb198c9c86b19f%3A0xb670d88b952e31be!2sSiddhi%20Smiles%20Dental%20Clinic!5e0!3m2!1sen!2snp!4v1732466049903!5m2!1sen!2snp"
+                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </section>
+</main>
+<%- include('./partials/footer') %>
+
+</body>
+
+</html>
+<script src="/js/popup_mycart.js"></script>
+<script src="/js/review.js"></script>
+<script src="/js/team.js"></script>

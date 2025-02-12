@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+.information-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Two columns */
+    gap: 100px; /* Space between the boxes */
+    margin: 0 ;
+    padding: 20px;
+}
+        /* Container for the information boxes */
+        .information-box {
+    display: flex;
+    align-items: flex-start; /* Align items at the start of the cross axis */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    margin: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; /* Combined transitions */
+    max-width: 500px;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+/* Default hover effect for all information boxes */
+.information-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Grey background on hover if daysLeft is empty, null, or not set */
+.information-box[data-daysleft=""]:hover,
+.information-box:not([data-daysleft]):hover {
+    background-color: #a8a1a1; /* Grey */
+}
+
+/* Green background on hover for positive daysLeft */
+.information-box[data-daysleft]:not([data-daysleft^="-"]):not([data-daysleft=""]):hover {
+    background-color: rgb(102, 175, 102); /* Green */
+}
+
+/* Red background on hover for negative daysLeft */
+.information-box[data-daysleft^="-"]:hover {
+    background-color: rgb(207, 128, 128); /* Red */
+}
+
+
+
+/* Style for each piece of information inside the box */
+.information-box p {
+    margin: 5px 0;
+    color: #333;
+    font-weight: 500;
+    text-align: left; /* Ensure text aligns left */
+}
+
+.image {
+    width: 100px;
+    height: 100px;
+    border-radius: 10% 50% 10% 50%/
+                   50% 10% 50% 10%;
+    margin-right: 20px; /* Adds space between the image and the text */
+}
+
+    </style>
+</head>
+<body>
+    <h1>Hi  users</h1>
+    <form action="/url/viewuser" method="GET">
+        <input type="text" id="search" name="search" placeholder="Enter name">
+        <button type="submit">Search</button>
+    </form>
+    <div class="information-container">
+        <% if (locals.urls) { %>
+            <% urls.forEach((url, index) => { %>
+
+                <% 
+                    // Calculate daysLeft for each user
+                    const priceData = prices.find(price => price.name === url.name);
+                    const daysLeft1 = priceData ? Math.ceil((priceData.endDate - new Date()) / (1000 * 60 * 60 * 24)) : null; 
+                %>
+
+                <div class="information-box"  data-daysleft="<%= daysLeft1 %>">
+                    <div>
+                        <img class="image" src="/profileImage/<%= path.basename(url.profileImage) %>">
+                    </div>
+                    <div>
+                        <p><strong><%= index + 1 %></strong></p>
+                        <p>Name: <%= url.name %></p>
+                        <p>Email: <%= url.email %></p>
+                        <p>Location: <%= url.location %></p>
+                        <p>Age: <%= url.age %></p>
+                        <p>Weight: <%= url.weight %></p>
+                        <p>Height: <%= url.height %></p>
+                        <p>Phone Number: <%= url.phoneno %></p>
+                        <form action="/url/edituser/<%= encodeURIComponent(url.name) %>" method="GET">
+                            <button type="submit">Edit User</button>
+                        </form>
+                        <form onsubmit="return confirmDelete('<%= url.name %>')" action="/url/deleteuser/<%= encodeURIComponent(url.name) %>" method="POST">
+                            <button type="submit">Delete User</button>
+                          </form>
+                          <form action="/url/adduserprice/<%= encodeURIComponent(url.name) %>" method="POST">
+                            <label for="startdate_<%= index %>">Enter a Start date:</label>
+                            <input type="date" id="startdate_<%= index %>" name="startdate" value="<%= prices.find(price => price.name === url.name)?.startDate ? new Date(prices.find(price => price.name === url.name).startDate).toISOString().split('T')[0] : '' %>"><br><br>
+                          
+                            <label for="cars_<%= index %>">Price:</label>
+                            <select name="cars" id="cars_<%= index %>">
+                                <option value="2500" <%= prices.find(price => price.name === url.name)?.price === 2500 ? 'selected' : '' %>>Rs. 2500</option>
+                                <option value="6000" <%= prices.find(price => price.name === url.name)?.price === 6000 ? 'selected' : '' %>>Rs. 6000</option>
+                                <option value="10000" <%= prices.find(price => price.name === url.name)?.price === 10000 ? 'selected' : '' %>>Rs. 10000</option>
+                            </select><br><br>
+                          
+                            <label for="enddate_<%= index %>">Enter an End date:</label>
+                            <input type="date" id="enddate_<%= index %>" name="enddate" value="<%= prices.find(price => price.name === url.name)?.endDate ? new Date(prices.find(price => price.name === url.name).endDate).toISOString().split('T')[0] : '' %>"><br><br>
+                          
+                            <button type="submit">Add Price</button>
+                        </form>
+
+                        
+                        <div class="information-boxes">
+                          <% prices.forEach(price => { %>
+                            <% if (url.name === price.name) { %>  <!-- Check if the names match -->
+                                <div>
+                                    <p>Start Date: <%= new Date(price.startDate).toLocaleDateString() %></p>
+                                    <p>End Date: <%= new Date(price.endDate).toLocaleDateString() %></p>
+                                    <p>Price: Rs. <%= price.price %></p>
+                                    <% 
+                                        const today = new Date();
+                                        const daysLeft = Math.ceil((price.endDate - today) / (1000 * 60 * 60 * 24)); 
+                                    %>
+                                    <p>Days Left: <%= daysLeft %> days</p>
+                                </div>
+                            <% } %>
+                        <% }) %>
+                    </div>
+                          
+                    </div>
+                </div>
+            <% }) %>
+        <% } %>
+    </div>
+
+    </body>
+    </html>
+    
+    <script>
+        // Function to calculate the end date
+        function calculateEndDate(startDate, monthsToAdd) {
+            const date = new Date(startDate);
+            date.setMonth(date.getMonth() + monthsToAdd);
+            return date.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
+        }
+    
+        // Function to apply event listeners to all sets of startdate, enddate, and cars
+        function applyDateLogicToAllForms() {
+            document.querySelectorAll('.information-box').forEach((box, index) => {
+                const startDateInput = box.querySelector(`#startdate_${index}`);
+                const endDateInput = box.querySelector(`#enddate_${index}`);
+                const priceSelect = box.querySelector(`#cars_${index}`);
+    
+                function updateEndDate() {
+                    const startDate = startDateInput.value;
+                    const selectedPrice = priceSelect.value;
+                    let monthsToAdd;
+    
+                    if (selectedPrice === '2500') {
+                        monthsToAdd = 1;
+                    } else if (selectedPrice === '6000') {
+                        monthsToAdd = 3;
+                    } else if (selectedPrice === '10000') {
+                        monthsToAdd = 6;
+                    } else {
+                        monthsToAdd = 0; // Default to 0 months if no price is selected
+                    }
+    
+                    if (startDate) {
+                        const endDate = calculateEndDate(startDate, monthsToAdd);
+                        endDateInput.value = endDate;
+                    }
+                }
+    
+                // Add event listeners
+                startDateInput.addEventListener('change', updateEndDate);
+                priceSelect.addEventListener('change', updateEndDate);
+            });
+            
+        }
+        function confirmDelete(name) {
+    return confirm(`Are you sure you want to delete ${name} from the Gym?`);
+  }
+        
+        // Initialize the script
+        applyDateLogicToAllForms();
+    </script>
+    

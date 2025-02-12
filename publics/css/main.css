@@ -1,0 +1,407 @@
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    margin-top: 0;
+}
+
+/* Home Section */
+#home {
+    background: url('../../views/doctors_background.jpg') no-repeat center center/cover;
+    height: 100vh;
+    /* Full viewport height */
+    display: flexbox;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#home h1 {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+#home p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+#home .btn {
+    padding: 10px 30px;
+    font-size: 1.2rem;
+    border-radius: 30px;
+}
+
+#about p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-top: 20px;
+}
+
+/* Pricing Section */
+.card {
+    background: url('views/doctors_background.jpg') center center/cover;
+    border: none;
+    /* Remove default border */
+    border-radius: 10px;
+    /* Rounded corners */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    /* Slight lift effect */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    /* Add shadow on hover */
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.topic {
+    text-decoration: underline solid #47489A;
+    text-underline-offset: 20px;
+    /* Adjust the offset value as needed */
+    font-weight: bold;
+    color: #47489A;
+    text-transform: uppercase;
+}
+
+
+/* Gallery Section */
+#gallery img {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+}
+
+#gallery img:hover {
+    transform: scale(1.05);
+    /* Slight zoom on hover */
+}
+/* Media Queries */
+@media (max-width: 768px) {
+    #home h1 {
+        font-size: 2rem;
+    }
+
+    #home p {
+        font-size: 1rem;
+    }
+
+    #about p {
+        font-size: 1rem;
+    }
+
+    .card-title {
+        font-size: 1.3rem;
+    }
+}
+
+#socialmedia .iframe-container {
+    display: flex;
+    justify-content: space-around;
+    /* Space between the two iframes */
+    align-items: center;
+    /* Vertically align the iframes */
+    gap: 20px;
+    /* Add space between the iframes */
+    padding: 20px;
+}
+
+#socialmedia iframe {
+    flex: 4;
+    /* Adjust the width of each iframe to fit */
+    max-width: 45%;
+    /* Limit the maximum width of each iframe */
+    height: 500px;
+}
+
+/* Product Card */
+.product-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: #fff;
+    border: 1px solid #ddd;
+}
+
+/* Shadow on hover */
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Product Image */
+.product-image {
+    max-height: 150px;
+    object-fit: cover;
+}
+
+/* Product Name */
+.product-name {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+/* Product Subtitle */
+.product-subtitle {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+/* Product Price */
+.product-price {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Add to Cart Button */
+.add-to-cart-btn {
+    background: #007bff;
+    color: #fff;
+    font-weight: bold;
+    transition: background 0.2s ease;
+}
+
+.add-to-cart-btn:hover {
+    background: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .product-card {
+        margin-bottom: 20px;
+    }
+}
+
+/* General Section Background */
+#review {
+    background-color: #e8f5fc; /* Light blue background */
+    overflow: hidden;
+}
+
+.topic {
+    color: #003366;
+    font-weight: bold;
+}
+
+/* Slider Styling */
+.slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 300%; /* Adjust for three sets of slides if you have 6 reviews */
+}
+
+.slide {
+    width: 33.3333%; /* Each slide takes one-third of the space */
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.slider-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ccc;
+    cursor: pointer;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+input#slide1:checked ~ .slider {
+    transform: translateX(0); /* Show the first set of reviews */
+}
+
+input#slide2:checked ~ .slider {
+    transform: translateX(-33.3333%); /* Show the second set of reviews */
+}
+
+/* Active dot styling */
+input#slide1:checked ~ .slider-controls label[for="slide1"],
+input#slide2:checked ~ .slider-controls label[for="slide2"] {
+    background-color: #007bff;
+}
+
+/* Review Box Styling */
+.review-box {
+    background-color: #ffffff; /* White background for box */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: visible;
+    height: 250px;
+    width:350px;
+}
+
+.review-name {
+    color: #003366; /* Dark Blue for the name */
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    margin-left: 2rem;
+}
+
+.blue-line {
+    width: 50px;
+    height: 3px;
+    background-color: #007bff; /* Blue color */
+    margin: 0;
+    border: none;
+    margin-left: 2rem;
+}
+
+.review-text {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 1rem;
+    margin-left: 2rem;
+}
+
+
+.review-image {
+    position: absolute;
+    top: 50%;
+    left: -40px; /* Adjust for better alignment */
+    transform: translateY(-50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%; /* Ensure circular profile images */
+    border: 3px solid #ffffff;
+    object-fit: cover;
+    background-color: #f5f5f5;
+}
+
+
+
+/* General Section Styling */
+#team {
+    overflow: visible;
+    position: relative;
+}
+
+#team .container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+}
+
+.slider-container {
+    background-color: red;
+    position: relative;
+    width: 100%;
+    max-width: 1400px; /* Adjust as needed */
+    overflow: hidden;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    padding: 0 140px 0 70px; /* Add padding to allow space for arrows */
+}
+
+.team-slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    gap: 20px;
+    width: 100%;
+}
+
+.team-wrapper {
+    display: flex;
+    transition: transform 0.5s ease-in-out; /* Smooth sliding effect */
+}
+
+.team-card {
+    flex: 0 0 calc(33.33% - 20px); /* Show exactly 3 cards in one view */
+    margin: 0 10px; /* Adjust spacing between cards */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden; /* Ensure profile image doesn't overflow */
+}
+
+.team-card img {
+    width: 100%;
+    height: auto;
+    border-bottom: 2px solid #007bff;
+}
+
+.image-container {
+    position: relative;
+    height: 600px; /* Increase the height as needed */
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Maintain the aspect ratio while filling the container */
+    border-radius: 10px;
+}
+
+.info {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    text-align: center;
+}
+
+.info .name {
+    font-weight: bold;
+    color: #007bff;
+    margin: 0;
+}
+
+.info .profession {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 101; /* Ensure arrows are above all other elements */
+    color: #007bff;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    overflow: visible; /* Allow arrows to be seen outside container */
+}
+
+/* Left arrow */
+.left-arrow {
+    left: 0; /* Positioned outside the container */
+    position: absolute;
+}
+
+/* Right arrow */
+.right-arrow {
+    right: 0; /* Positioned outside the container */
+    position: re;
+}
+
+

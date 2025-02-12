@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="/uploaditemsimages" method="POST" enctype="multipart/form-data">
+        <input type="text" name="name" placeholder="Name of the Service" required>
+        <input type="text" name="subtitle" placeholder="Subtitle that placed just below" required>
+        <input type="number" name="amount" placeholder="Amount" required>
+        <textarea name="description" placeholder="Description" style="width: 20rem; height: 120px;" required></textarea>
+        <input type="file" name="photo" accept="image/*" required/>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div class="row">
+        <% if (locals.service) { %>
+            <% service.forEach((service, index)=> { %>
+                <div class="col-md-4 mb-4 text-center">
+                    <!-- Name and Profession -->
+                    <p><strong>
+                            <%= index + 1 %>. <%= service.name %>
+                        </strong></p>
+                    <p>Subtitle: <%= service.subtitle %>
+                        <p>Amount: <%= service.amount %></p>
+                        <p>Visiblilty: <%= service.visible %></p>
+                    </p>
+                    <% if (service.visible=="on") { %>
+                    <form action="/disableitem" method="POST">
+                        <input type="text" name="id"  value="<%= service.id %>" readonly>
+                        <button type="submit">Disable</button>
+                    </form>
+                    <% } %>
+                    <% if (service.visible=="off") { %>
+                        <form action="/enableitem" method="POST">
+                            <input type="text" name="id"  value="<%= service.id %>" readonly>
+                            <button type="submit">Enable</button>
+                        </form>
+                    <% } %>   
+                </div>
+                <% }) %>
+                    <% } %>
+    </div>
+    <% if (typeof error !== "undefined" && error) { %>
+        <div class="alert alert-danger"><%= error %></div>
+      <% } %>
+</body>
+
+</html>

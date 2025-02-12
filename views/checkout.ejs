@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+</head>
+<body>
+  <%- include('./partials/header') %>
+  <main>
+    <% if (user) { %>
+        <% if (user.profile) { %>
+          <img src="/gmailprofile/<%= path.basename(user.profile) %>" alt="User Logo" class="rounded-circle" style="width: 40px; height: 40px;">
+        <% } %>
+        <p>Checkout <%= user.name %></p>
+    
+        <% if (checkout.length > 0) { %>
+            <ul>
+              <% checkout.forEach((checkout, index) => { %>
+                <li>
+                    <p><strong>User ID:</strong> <%= checkout.user_id._id %></p>
+                    <% if (checkout.service_id && checkout.service_id._id) { %>
+                      <p><strong>Service ID:</strong> <%= checkout.service_id._id %></p>
+                      <p><strong>Service Name:</strong> <%= checkout.service_id.name %></p>
+                      <p><strong>Subtitle Name:</strong> <%= checkout.service_id.subtitle %></p>
+                    <% } else { %>
+                      <p><strong>Service Name:</strong> Sorry, this item is deleted</p>
+                    <% } %>
+                    <p><strong>Quantity</strong> <%= checkout.quantity %></p>
+                </li>
+              <% }); %>
+            </ul>
+            
+        <% } else { %>
+          <p>Your Checkout is empty!</p>
+        <% } %>
+      <% } %>
+
+      <% if (typeof error !== "undefined" && error) { %>
+        <div class="alert alert-danger"><%= error %></div>
+      <% } %>
+    </main>
+    <%- include('./partials/footer') %>
+</body>
+</html>

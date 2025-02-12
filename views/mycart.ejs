@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart</title>
+</head>
+<style>
+  body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin-top: 0;
+        }
+</style>
+<body>
+  <%- include('./partials/header') %>
+  <main>
+  <% if (user) { %>
+    <% if (user.profile) { %>
+      <img src="/gmailprofile/<%= path.basename(user.profile) %>" alt="User Logo" class="rounded-circle" style="width: 40px; height: 40px;">
+    <% } %>
+    <p>My Cart <%= user.name %></p>
+
+    <% if (mycart.length > 0) { %>
+      <form action="/uploadcheckout" method="POST">
+        <ol>
+          <p>Location Details</p>
+          <% if (alluser) { %>
+          <input type="text" name="location" placeholder="Enter location" value="<%= alluser.location %>" required />
+          <input type="number" name="phoneno" placeholder="Enter phone number" maxlength="10" minlength="9" value="<%= alluser.phoneno %>" required />
+          <% } else { %>
+            <input type="text" name="location" placeholder="Enter location" required />
+          <input type="number" name="phoneno" placeholder="Enter phone number" maxlength="10" minlength="9" required />
+          <% } %>
+          <p>Products</p>
+          <% mycart.forEach((cart, index) => { %>
+
+            <li>
+              <a href="/description?id=<%= cart.service_id.id %>"><img src="/items/<%= path.basename(cart.service_id.photo) %>" class="img-fluid rounded mb-2" style="width:100px; height:100px"></a>
+              <p><strong>Service Name:<a href="/description?id=<%= cart.service_id.id %>"></strong> <%= cart.service_id.name %></p></a>
+              <p><strong>Subtitle Name:</strong> <%= cart.service_id.subtitle %></p>
+              <div class="input-group quantity-container">
+                <button class="btn btn-outline-secondary decrease-btn" type="button" data-index="<%= index %>">-</button>
+                <input
+                  type="number"
+                  class="form-control text-center quantity-input"
+                  name="quantity-<%= cart._id %>"
+                  value="1"
+                  min="1"
+                  data-index="<%= index %>"
+                />
+                <button class="btn btn-outline-secondary increase-btn" type="button" data-index="<%= index %>">+</button>
+                <input
+                  type="number"
+                  class="form-control text-center"
+                  name="amount"
+                  id="amount"
+                  value="0"
+                  data-index="<%= index %>"
+                  data-service-amount="<%= cart.service_id.amount %>"
+                  readonly
+                />
+              </div>
+              <p><strong>Amount:</strong> <%= cart.service_id.amount %></p>
+              <p><strong>Added At:</strong> <%= cart.added_at.toLocaleString() %></p>
+              <button
+  type="button"
+  class="btn btn-danger delete-item-btn"
+  data-service-id="<%= cart.service_id.id %>"
+  data-user-id="<%= cart.user_id %>"
+>
+              &times; Remove
+            </button>
+              <input type="checkbox" name="selectedItems" value="<%= cart._id %>" />
+            </li>
+          <% }); %>
+        </ol>
+        <div class="input-group">
+          <label for="totalquantity" class="form-label">Total Quantity:</label>
+          <input type="number" class="form-control text-center" name="totalquantity" id="totalquantity" value="0" readonly />
+          <label for="totalamount" class="form-label">Total Amount:</label>
+          <input type="number" class="form-control text-center" name="totalamount" id="totalamount" value="0" readonly />
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    <% } else { %>
+      <p>Your cart is empty!</p>
+    <% } %>
+  <% } %>
+
+  <% if (typeof error !== "undefined" && error) { %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+</main>
+<%- include('./partials/footer') %>
+</body>
+
+</html>
+<script src="/js/mycart.js"></script>
+<script src="/js/delete_mycart.js"></script>

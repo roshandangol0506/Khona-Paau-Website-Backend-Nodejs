@@ -1,0 +1,26 @@
+const mongoose = require("mongoose");
+
+const newcheckout = new mongoose.Schema({
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    required: true,
+  },
+  service_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "service",
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+  added_at: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const Checkout = mongoose.model("Checkout", newcheckout);
+
+module.exports = Checkout;

@@ -1,0 +1,124 @@
+#navbar {
+    background-color: transparent;
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
+    box-shadow: none;
+}
+
+#navbar.scrolled {
+    background-color: #333;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+#navbar .nav-link {
+    position: relative;
+    color: white;
+    /* Text color */
+    text-decoration: none;
+    /* Remove underline */
+    margin-right: 40px;
+    display: inline-block;
+    transition: color 0.3s ease-in-out;
+    /* Smooth text color transition */
+}
+
+/* Pseudo-element for the bottom border */
+#navbar .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    /* Position the line at the bottom */
+    width: 0;
+    /* Initially no width */
+    height: 2px;
+    /* Thickness of the line */
+    background-color: white;
+    /* Bottom border color */
+    transition: width 0.5s ease, left 0.5s ease;
+    /* Smooth animation */
+}
+
+/* On hover: Expand the border */
+#navbar .nav-link:hover::after {
+    width: 100%;
+    /* Full width of the text */
+    left: 0;
+    /* Align to the start */
+}
+
+
+.nav-link:hover {
+    transform: scale(1.07);
+    color: #f00;
+}
+
+.nav-item {
+    position: relative;
+    margin-right: 40px;
+}
+
+.nav-item i {
+    font-size: 15px;
+    margin-right: 5px;
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover i {
+    transform: scale(1.07);
+}
+
+
+
+
+.navbar-toggler-icon {
+    background-image: url('data:image/svg+xml;charset=utf8,%3Csvg viewBox%3D%220 0 30 30%22 xmlns%3D%22http://www.w3.org/2000/svg%22%3E%3Cpath stroke%3D%22rgba%280,0,0,0.5%29%22 stroke-width%3D%222%22 stroke-linecap%3D%22round%22 stroke-miterlimit%3D%2210%22 d%3D%22M4 7h22M4 15h22M4 23h22%22/%3E%3C/svg%3E');
+    background-color: #fff;
+    /* Make toggler icon white */
+}
+
+
+.nav-join {
+    padding: 0.5rem 1.5rem;
+    /* Adjust horizontal padding */
+    color: #020379;
+    font-weight: bold;
+    border: 2px solid #020379;
+    background-color: transparent;
+    border-radius: 30px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s ease;
+    text-decoration: none;
+}
+
+.nav-join::after {
+    content: "→";
+    position: absolute;
+    font-size: 1.5rem;
+    right: 0;
+    margin-left: 10px;
+    top: 45%;
+    /* Vertically center the arrow */
+    transform: translateY(-50%);
+    /* Adjust the position to be truly centered */
+    opacity: 0;
+    color: white;
+    transition: all 0.5s ease;
+}
+
+
+.nav-join:hover {
+    background-color: #47489A;
+    color: white;
+    border: 2px solid #47489A;
+    padding-left: 2rem;
+    padding-right: 3rem;
+}
+
+.nav-join:hover::after {
+    right: 0.8rem;
+    opacity: 1;
+}
+

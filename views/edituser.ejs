@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>Edit User of <%= user.name %></p>
+
+    <form action="/url/updateuser/<%= encodeURIComponent(user.name) %>" method="POST"  enctype="multipart/form-data">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="<%= user.name %>"><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="<%= user.email %>"><br><br>
+
+        <label for="location">location:</label>
+        <input type="text" id="location" name="location" value="<%= user.location %>"><br><br>
+
+        <label for="age">age:</label>
+        <input type="text" id="age" name="age" value="<%= user.age %>"><br><br>
+
+        <label for="weight">Weight:</label>
+        <input type="text" id="weight" name="weight" value="<%= user.weight %>"><br><br>
+
+        <label for="height">Height:</label>
+        <input type="text" id="height" name="height" value="<%= user.height %>"><br><br>
+
+        <label for="phoneno">Phone Number:</label>
+        <input type="text" id="phoneno" name="phoneno" value="<%= user.phoneno %>"><br><br>
+
+        <label for="startdate">Profile Picture:</label>
+        <input type="file" id="profilepic" name="profilepic" value="<%= user.profileImage %>"><br><br>
+
+        <button type="submit">Update</button>
+    </form>
+</body>
+</html>
+<script>
+    document.getElementById('updateForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    // Create FormData object to handle file upload
+    const formData = new FormData(this);
+
+    // Send the file data first
+    fetch('/uploadProfileImage', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Now submit the user details
+        return fetch(`/url/updateuser/<%= encodeURIComponent(user.name) %>`, {
+            method: 'POST',
+            body: new URLSearchParams(new FormData(this)) // Send the rest of the data
+        });
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.href = '/url/viewuser'; // Redirect after successful update
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+</script>

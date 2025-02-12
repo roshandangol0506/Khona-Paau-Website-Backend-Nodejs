@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Items</title>
+    <link rel="stylesheet" href="/css/popup_mycart.css">
+</head>
+<body>
+    <%- include('./partials/header') %>
+  <main>
+    <section id="home" class="d-flex align-items-center text-center text-light">
+        <div class="container">
+            <h1 class="display-4">Welcome</h1>
+            <p class="lead">Brighten your day with a brighter smile!</p>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="products" class="section py-5 bg-white text-dark">
+        <div class="container text-center">
+            <h2 class="topic mb-4">Our Service</h2>
+            <div class="row">
+                <% if (locals.service) { %>
+                    <% service.forEach((service, index) => { %>
+                      <div class="col-md-4 mb-4 text-center">
+                        <!-- Image -->
+                        <a href="/description?id=<%= service.id %>">
+                          <img src="/items/<%= path.basename(service.photo) %>" class="img-fluid rounded mb-2">
+                        </a>
+                        <!-- Name and Profession -->
+                        <p><strong>
+                          <a href="/description?id=<%= service.id %>"><%= index + 1 %>. <%= service.name %></a>
+                        </strong></p>
+                        <p>Subtitle: <%= service.subtitle %></p>
+                        <p>Amount: <%= service.amount %></p>
+                        
+                        <!-- Form -->
+                        <form id="cartForm-<%= service.id %>" action="/uploadmycart" method="POST" onsubmit="handleCartFormSubmit(event, '<%= service.id %>')">
+                          <% if (user) { %>
+                          <input type="hidden" name="id" value="<%= service.id %>">
+                          <input type="hidden" name="user" value="<%= user._id %>">
+                          <button type="submit" class="btn btn-primary">Add to Cart</button>
+                          <% } else { %>
+                          <a href="login" class="btn btn-primary">Add to Cart</a>
+                          <% } %>
+                        </form>
+                        <div id="popupMessage" class="popup-message">
+                            Added to Cart!
+                          </div>  
+                      </div>
+                    <% }) %>
+                  <% } %>
+          
+            </div>
+        </div>
+    </section>
+  </main>
+  <%- include('./partials/footer') %>
+</body>
+</html>
+<script src="/js/popup_mycart.js"></script>
