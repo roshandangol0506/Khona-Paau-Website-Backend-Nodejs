@@ -15,7 +15,35 @@ A fully dynamic e-commerce platform that allows users to **browse, review, and p
 - Sign up with **username & password** or log in via **Gmail authentication**.  
 - Add products to the shopping cart and proceed to checkout.  
 - Leave reviews for purchased products.  
-- Explore a **photo gallery** showcasing staff and facilities.  
+- Explore a **photo gallery** showcasing staff and facilities.
+
+-              +--------------------+
+               |      Admin         |
+               +--------------------+
+                      ||  Manages  
+                      ||
+                      ||
+        +-------------||-------------+
+        |                            |
++----------------+          +----------------+
+|     User      |          |     Seller      |
+| (Customer)    |          |  (User Role)    |
++----------------+          +----------------+
+        ||  Buys Products          ||  Uploads/Deletes Products
+        ||                         ||
+        ||                         ||
+        ||                         ||
++----------------+          +----------------+
+|    Product    |          |   Category     |
++----------------+          +----------------+
+        ||  
+        ||  Belongs to  
+        ||
++----------------+
+|     Cart      |
++----------------+
+
+
 
 ## 🛠️ Tech Stack  
 - **Backend**: NodeJs  
