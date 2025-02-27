@@ -52,7 +52,6 @@ Gallery |||--- showcases ---||| Staff & Facilities
 
 ## 🛠️ Tech Stack  
 - **Backend**: NodeJs  
-- **Frontend**: HTML, CSS, Bootstrap JavaScript  
 - **Database**: MongoDB 
 - **Authentication**: Gmail OAuth & Custom Login  
 
