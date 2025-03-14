@@ -1,6 +1,6 @@
 require("dotenv").config();
 const passport = require("passport");
-const User = require("../modules/user"); // Adjust the path as needed
+const User = require("../modules/user");
 const { setUser } = require("../service/auth");
 const { v4: uuidv4 } = require("uuid");
 const axios = require("axios");
@@ -19,43 +19,34 @@ function setupGoogleAuth(app) {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          // Check if the user already exists in the database
           let user = await User.findOne({ email: profile.emails[0].value });
 
-          // If user doesn't exist, create a new one
           if (!user) {
             const profileImageUrl = profile.photos[0].value;
 
-            // Download the profile image
             const response = await axios.get(profileImageUrl, {
               responseType: "arraybuffer",
             });
 
-            // Generate a unique filename
             const filename = `${Date.now()}-${uuidv4()}.jpg`;
 
-            // Define the folder and file path
             const folderPath = path.join(__dirname, "..", "gmailprofile");
             const filePath = `D:/Practice/gmailprofile/${filename}`;
 
-            // Ensure the folder exists
             if (!fs.existsSync(folderPath)) {
               fs.mkdirSync(folderPath);
             }
 
-            // Save the image to disk
             fs.writeFileSync(filePath, response.data);
 
-            // Create the user
             user = new User({
               name: profile.displayName,
               email: profile.emails[0].value,
-              profile: filePath, // Save the file path
+              profile: filename,
             });
             await user.save();
           }
 
-          // Pass the user object to serializeUser
           done(null, user);
         } catch (error) {
           console.error("Error handling Google login:", error);
@@ -89,7 +80,7 @@ function setupGoogleAuth(app) {
           httpOnly: true,
           maxAge: 1000 * 60 * 60 * 24, // 1 day
         });
-        res.redirect("/");
+        res.redirect("http://localhost:3000/");
       } catch (error) {
         console.error("Error in Google callback:", error);
         res.redirect("/auth");

@@ -38,44 +38,61 @@ async function handleUserLogin(req, res) {
   const { email, password } = req.body;
   const user = await User.findOne({ email, password });
   if (!user) {
-    return res.render("login", {
-      error: "Invalid username or Password",
-    });
+    return res.status(400).json({ error: "Invalid credentials" });
   }
   const sessionId = uuidv4();
   setUser(sessionId, { ...user.toObject(), role: user.role });
-  res.cookie("uid", sessionId);
-  return res.redirect("/");
+  res.cookie("uid", sessionId, { httpOnly: true, secure: false });
+  return res.status(200).json({ message: "Login successful" });
 }
 
 async function handleAdminLogin(req, res) {
   const { email, password } = req.body;
   const admin = await Admin.findOne({ email, password });
+
   if (!admin) {
-    return res.render("adminlogin", {
-      error: "Invalid username or Password",
-    });
+    return res.status(400).json({ error: "Invalid credentials" });
   }
+
   const sessionId = uuidv4();
   setUser(sessionId, { ...admin.toObject(), role: admin.role });
-  res.cookie("uid", sessionId);
-  return res.redirect("/");
+  res.cookie("uid", sessionId, { httpOnly: true, secure: false });
+  return res.status(200).json({ message: "Login successful" });
 }
 
+// async function handleAdminSignup(req, res) {
+//   const { name, email, password } = req.body;
+//   await Admin.create({
+//     name,
+//     email,
+//     password,
+//   });
+//   return res.redirect("/");
+// }
+
 async function handleAdminSignup(req, res) {
-  const { name, email, password } = req.body;
-  await Admin.create({
-    name,
-    email,
-    password,
-  });
-  return res.redirect("/");
+  try {
+    const { name, email, password } = req.body;
+
+    const existingAdmin = await Admin.findOne({ email });
+    if (existingAdmin) {
+      return res.status(400).json({ error: "Email already in use" });
+    }
+
+    const newAdmin = await Admin.create({ name, email, password });
+
+    return res
+      .status(201)
+      .json({ message: "Admin registered successfully", admin: newAdmin });
+  } catch (error) {
+    console.error("Signup Error:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
 }
 
 async function handleUserLogout(req, res) {
   res.clearCookie("uid");
-  console.log("User logged out.");
-  res.redirect("/");
+  return res.status(200).json({ message: "Logged out Successfully" });
 }
 
 module.exports = {

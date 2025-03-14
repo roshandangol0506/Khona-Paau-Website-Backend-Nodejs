@@ -14,8 +14,10 @@ const reviewRouter = require("./routes/review");
 const staticRouter = require("./routes/staticRouter");
 const viewuserRouter = require("./routes/viewuser");
 const uploadRouter = require("./routes/uploadProfileImage");
+const apiRouter = require("./routes/auth");
 const main = require("./routes/main");
 const setupGoogleAuth = require("./controllers/googleauth");
+const cors = require("cors");
 
 const { connectTomongoDB } = require("./connect");
 const { restrictToLoggedinUserOnly, checkAuth } = require("./middleware/auth");
@@ -28,21 +30,37 @@ connectTomongoDB("mongodb://localhost:27017/faau").then(() =>
   console.log("Connected to MongoDB")
 );
 
+const corsOptions = {
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:8001/auth/google/callback",
+  ],
+  methods: "GET, POST, PUT, DELETE, OPTIONS",
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
+app.options("*", cors(corsOptions));
+
 app.use(
   session({
-    secret: process.env.SESSION_SECRET, // Replace with a strong secret
-    resave: false, // Don't save session if unmodified
-    saveUninitialized: false, // Don't create session until something is stored
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl: "mongodb://localhost:27017/faau",
     }),
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24, // 1 day in milliseconds
+      httpOnly: true,
+      secure: false, // Set to true in production
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24,
     },
   })
 );
 
-// Initialize Passport.js middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -70,6 +88,8 @@ app.use("/", reviewRouter);
 app.use("/", staticRouter);
 app.use("/url", viewuserRouter);
 app.use("/", uploadRouter);
+app.use("/", main);
+app.use("/api", apiRouter);
 
 app.use((req, res, next) => {
   res.locals.user = req.user || null; // Pass `req.user` to all views

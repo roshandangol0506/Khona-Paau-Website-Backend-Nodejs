@@ -28,7 +28,7 @@ const uploadProfileImage = multer({ storage: ProfileImageStorage });
 
 async function handleUploadProfileImage(req, res) {
   try {
-    const profileImageLocation = `D:/Practice/profileImage/${req.file.filename}`;
+    const profileImageLocation = req.file.filename;
 
     // You can save the image path to MongoDB here, or pass it along to another route
     // For example, passing it to a controller to save with user data
@@ -43,7 +43,7 @@ async function handleUploadProfileImage(req, res) {
 
 const teamImageStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    return cb(null, "./uploads"); // Save in profileImage folder
+    return cb(null, "./uploads");
   },
   filename: function (req, file, cb) {
     return cb(null, `${Date.now()}-${file.originalname}`);
@@ -52,19 +52,32 @@ const teamImageStorage = multer.diskStorage({
 
 const uploadTeamImage = multer({ storage: teamImageStorage });
 
+// async function handleUploadImage(req, res) {
+//   try {
+//     const TeamImageLocation = req.file.filename;
+
+//     req.body.teamimage = TeamImageLocation;
+
+//     return handleGenerateNewTeam(req, res);
+//   } catch (error) {
+//     return res.render("uploadteamimages", {
+//       error: "An error occurred during uploading teams.",
+//     });
+//   }
+// }
+
 async function handleUploadImage(req, res) {
   try {
-    const TeamImageLocation = `D:/Practice/uploads/${req.file.filename}`;
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
-    // You can save the image path to MongoDB here, or pass it along to another route
-    // For example, passing it to a controller to save with user data
+    const TeamImageLocation = req.file.filename;
     req.body.teamimage = TeamImageLocation;
 
     return handleGenerateNewTeam(req, res);
   } catch (error) {
-    return res.render("uploadteamimages", {
-      error: "An error occurred during uploading teams.",
-    });
+    return res.status(500).json({ error: "An error occurred during upload." });
   }
 }
 
@@ -81,12 +94,15 @@ const uploadReviewImage = multer({ storage: reviewImageStorage });
 
 async function handleUploadReviewImage(req, res) {
   try {
-    const reviewImageLocation = `D:/Practice/reviews/${req.file.filename}`;
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+    const reviewImageLocation = req.file.filename;
 
     req.body.profilepic = reviewImageLocation;
     return handleGenerateNewReview(req, res);
   } catch (error) {
-    return res.render("uploadreview", {
+    return res.status.json({
       error: "An error occurred during uploading review.",
     });
   }
@@ -105,13 +121,16 @@ const uploadItemsImage = multer({ storage: ItemsImageStorage });
 
 async function handleUploadItemsImage(req, res) {
   try {
-    const itemsImageLocation = `D:/Practice/items/${req.file.filename}`;
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+    const itemsImageLocation = req.file.filename;
 
     req.body.photo = itemsImageLocation;
     return handleGenerateNewService(req, res);
   } catch (error) {
-    return res.render("uploadservice", {
-      error: "An error occurred during uploading Items",
+    return res.status.json({
+      error: "An error occurred during uploading Services.",
     });
   }
 }

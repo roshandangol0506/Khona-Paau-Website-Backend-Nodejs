@@ -1,17 +1,18 @@
-const MyCart = require("../modules/mycart"); // Adjust the path to your MyCart model
-const Checkout = require("../modules/checkout"); // Adjust the path to your Checkout model
+const MyCart = require("../modules/mycart");
+const Checkout = require("../modules/checkout");
 const SERVICE = require("../modules/service");
 const USER = require("../modules/user");
 const path = require("path");
 const nodemailer = require("nodemailer");
+const { request } = require("http");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
-  secure: false, // true for port 465, false for other ports
+  secure: false,
   auth: {
-    user: "roshan2121004@iimscollege.edu.np", // Replace with your email
-    pass: "Dontbreathe1", // Replace with your app password
+    user: "roshan2121004@iimscollege.edu.np",
+    pass: "Dontbreathe1",
   },
 });
 
@@ -22,100 +23,109 @@ async function handleGenerateCheckout(req, res) {
   const { selectedItems, location, phoneno } = req.body;
 
   if (!selectedItems || selectedItems.length === 0) {
-    return res.render("mycart", {
-      error: "No items selected.",
-    });
+    return res.status(400).send("No items Selected.");
   }
 
   if (!location || !phoneno) {
-    return res.render("mycart", {
-      error: "Location and phone number are required.",
-    });
+    return res.status(400).send("Location and phone number are required.");
   }
 
   try {
+    const cartIds = selectedItems.map((item) => item.cart_id);
+
     const selectedCartItems = await MyCart.find({
-      _id: { $in: selectedItems },
+      _id: { $in: cartIds },
     }).populate("service_id");
 
-    // Create an array of Checkout items
     const checkoutItems = selectedCartItems.map((cartItem) => ({
       user_id: cartItem.user_id,
       service_id: cartItem.service_id._id,
-      quantity: req.body[`quantity-${cartItem._id}`] || 1, // Retrieve the quantity from the form
+      quantity:
+        selectedItems.find((item) => item.cart_id === cartItem._id.toString())
+          ?.quantity || 1,
     }));
 
-    // Update the user with location and phone number
-    const userId = selectedCartItems[0]?.user_id; // Assuming all selected items belong to the same user
-    if (userId) {
-      await USER.findByIdAndUpdate(
-        userId,
-        { location, phoneno }, // Update location and phone number
-        { new: true } // Return the updated document
-      );
-    } else {
-      return res.render("mycart", {
-        error: "Failed to update user details.",
-      });
-    }
-
-    // Insert items into the Checkout collection
     await Checkout.insertMany(checkoutItems);
 
-    // Remove the selected items from MyCart
-    await MyCart.deleteMany({ _id: { $in: selectedItems } });
+    await MyCart.deleteMany({ _id: { $in: cartIds } });
 
-    let serviceDetails = "";
+    await USER.findByIdAndUpdate(
+      req.user._id,
+      { location, phoneno },
+      { new: true }
+    );
 
-    selectedCartItems.forEach((cartItem) => {
-      serviceDetails += `
-        <p>
-          <strong>Service:</strong> ${cartItem.service_id.name}<br>
-          <strong>Quantity:</strong> ${
-            req.body[`quantity-${cartItem._id}`] || 1
-          }
-        </p>
-      `;
+    res.status(200).json({
+      message: "Item are Successfully Checkout",
+      location: location,
+      phoneNumber: phoneno,
+      selectedItems: selectedItems,
     });
-
-    const emailBody = `
-      <h3>Checkout Details</h3>
-      <p><strong>Name:</strong> ${req.user.name}</p>
-      <p><strong>Email:</strong> ${req.user.email}</p>
-      <p><strong>Location:</strong> ${location}</p>
-      <p><strong>Phone No:</strong> ${phoneno}</p>
-      <h4>Selected Services:</h4>
-      ${serviceDetails}
-    `;
-
-    // Send the email
-    const info = await transporter.sendMail({
-      from: '"Roshan Dangol" <roshan2121004@iimscollege.edu.np>', // Sender address
-      to: "roshan.dangol00@gmail.com", // Recipient email
-      subject: "Checkout Submission", // Email subject
-      html: emailBody, // Email body
-    });
-
-    res.redirect("/mycart"); // Redirect to the MyCart page or another page
   } catch (error) {
-    return res.render("mycart", {
-      error: "An error occurred during checkout.",
-    });
+    console.log(error);
+    res.status(500).send("Failed to generate checkout.");
   }
+
+  // try {
+  //   const selectedCartItems = await MyCart.find({
+  //     _id: { $in: selectedItems },
+  //   }).populate("service_id");
+
+  //   const checkoutItems = selectedCartItems.map((cartItem) => ({
+  //     user_id: cartItem.user_id,
+  //     service_id: cartItem.service_id._id,
+  //     quantity: req.body[`quantity-${cartItem._id}`] || 1,
+  //   }));
+
+  //   const userId = selectedCartItems[0]?.user_id;
+  //   if (userId) {
+  //     await USER.findByIdAndUpdate(
+  //       userId,
+  //       { location, phoneno },
+  //       { new: true }
+  //     );
+  //   } else {
+  //     return res.status(400).send("Failed to update user details.");
+  //   }
+
+  //   await Checkout.insertMany(checkoutItems);
+
+  //   await MyCart.deleteMany({ _id: { $in: selectedItems } });
+
+  //   let serviceDetails = "";
+
+  //   selectedCartItems.forEach((cartItem) => {
+  //     serviceDetails += `
+  //       <p>
+  //         <strong>Service:</strong> ${cartItem.service_id.name}<br>
+  //         <strong>Quantity:</strong> ${
+  //           req.body[`quantity-${cartItem._id}`] || 1
+  //         }
+  //       </p>
+  //     `;
+  //   });
+
+  //   const emailBody = `
+  //     <h3>Checkout Details</h3>
+  //     <p><strong>Name:</strong> ${req.user.name}</p>
+  //     <p><strong>Email:</strong> ${req.user.email}</p>
+  //     <p><strong>Location:</strong> ${location}</p>
+  //     <p><strong>Phone No:</strong> ${phoneno}</p>
+  //     <h4>Selected Services:</h4>
+  //     ${serviceDetails}
+  //   `;
+
+  //   const info = await transporter.sendMail({
+  //     from: '"Roshan Dangol" <roshan2121004@iimscollege.edu.np>',
+  //     to: "roshan.dangol00@gmail.com",
+  //     subject: "Checkout Submission",
+  //     html: emailBody,
+  //   });
+
+  //   res.status(200).json({ message: "Item are Successfully Checkout" });
+  // } catch (error) {
+  //   return res.status(400).send("An error occured while checkout");
+  // }
 }
 
-async function handleCheckout(req, res) {
-  let allservices = await SERVICE.find({});
-  let allcheckout = await Checkout.find({ user_id: req.user._id }).populate(
-    "service_id"
-  );
-
-  res.render("checkout", {
-    user: req.user,
-    path: path,
-    checkout: allcheckout,
-    service: allservices,
-  });
-}
-
-module.exports = { handleGenerateCheckout, handleCheckout };
+module.exports = { handleGenerateCheckout };
