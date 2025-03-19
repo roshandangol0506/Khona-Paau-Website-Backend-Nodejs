@@ -59,6 +59,17 @@ async function handlegetallitems(req, res) {
     .send({ success: true, msg: "Post Success", data: allservices });
 }
 
+async function handlegetbestSellingproducts(req, res) {
+  let allbestSellings = await SERVICE.find({
+    best_selling: "true",
+    visible: "on",
+  });
+
+  res
+    .status(200)
+    .send({ success: true, msg: "Post Success", data: allbestSellings });
+}
+
 async function handlegetreviews(req, res) {
   let allreviews = await REVIEW.find({});
 
@@ -86,4 +97,5 @@ module.exports = {
   handlegetallitems,
   handlegetreviews,
   handleCheckout,
+  handlegetbestSellingproducts,
 };

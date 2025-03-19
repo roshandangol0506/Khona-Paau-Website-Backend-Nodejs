@@ -45,8 +45,33 @@ async function handleEnableItems(req, res) {
   }
 }
 
+async function handleBestSelling(req, res) {
+  try {
+    const service = await SERVICE.findById(req.params.id);
+    if (!service) {
+      return res.status(404).json({ error: "Service not found" });
+    }
+
+    if (service.best_selling === "true") {
+      service.best_selling = "false";
+      await service.save();
+    } else {
+      service.best_selling = "true";
+      await service.save();
+    }
+
+    return res.status(200).json({
+      message: `Best Selling status updated to ${service.best_selling}`,
+    });
+  } catch (error) {
+    console.error("Error toggling best selling:", error);
+    return res.status(500).json({ error: "Failed to toggle best selling" });
+  }
+}
+
 module.exports = {
   handleGenerateNewService,
   handleDisableItems,
   handleEnableItems,
+  handleBestSelling,
 };

@@ -22,6 +22,11 @@ const newservice = new mongoose.Schema(
       type: String,
       required: true,
     },
+    best_selling: {
+      type: String,
+      enum: ["true", "false"],
+      default: "false",
+    },
     visible: {
       type: String,
       enum: ["on", "off"],
