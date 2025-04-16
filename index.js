@@ -92,7 +92,7 @@ app.use("/", main);
 app.use("/api", apiRouter);
 
 app.use((req, res, next) => {
-  res.locals.user = req.user || null; // Pass `req.user` to all views
+  res.locals.user = req.user || null; 
   next();
 });
 

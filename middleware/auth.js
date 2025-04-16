@@ -47,6 +47,8 @@ async function checkAuths(req, res) {
     username: user.name,
     email: user.email,
     profile: user.profile ? user.profile : null,
+    location: user.location ? user.location : null,
+    phoneno: user.phoneno ? user.phoneno : null,
     role: user.role,
   });
 }

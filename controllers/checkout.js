@@ -5,6 +5,7 @@ const USER = require("../modules/user");
 const path = require("path");
 const nodemailer = require("nodemailer");
 const { request } = require("http");
+const { setUser } = require("../service/auth");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -49,11 +50,27 @@ async function handleGenerateCheckout(req, res) {
 
     await MyCart.deleteMany({ _id: { $in: cartIds } });
 
-    await USER.findByIdAndUpdate(
-      req.user._id,
-      { location, phoneno },
-      { new: true }
-    );
+    const user = await USER.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    console.log("location", location);
+    console.log("phoneo", phoneno);
+    if (location) user.location = location;
+    if (phoneno) user.phoneno = phoneno;
+
+    await user.save();
+
+    const userUid = req.cookies?.uid;
+    if (userUid) {
+      setUser(userUid, user);
+    }
+
+    // const userUid = req.cookies?.uid;
+    // console.log("userUid from handlecheckout", userUid);
+    // if (userUid) {
+    //   setUser(userUid, user);
+    // }
 
     res.status(200).json({
       message: "Item are Successfully Checkout",

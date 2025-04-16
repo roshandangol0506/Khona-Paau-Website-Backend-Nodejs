@@ -1,5 +1,18 @@
 const SERVICE = require("../modules/service");
 
+async function handleGetSpecificItems(req, res) {
+  try {
+    const { product_id } = req.params;
+    const product = await SERVICE.findById(product_id);
+    if (!product) {
+      return res.status(404).json({ error: "Cannot Find Product" });
+    }
+    res.status(200).send({ success: true, msg: "Get Success", data: product });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to Fetch Product" });
+  }
+}
+
 async function handleGenerateNewService(req, res) {
   try {
     const { name, subtitle, amount, description, photo } = req.body;
@@ -36,7 +49,19 @@ async function handleDisableItems(req, res) {
 
 async function handleEnableItems(req, res) {
   try {
-    await SERVICE.findByIdAndUpdate(req.body.id, { visible: "on" });
+    const service = await SERVICE.findById(req.params.id);
+    if (!service) {
+      return res.status(404).json({ error: "Service not found" });
+    }
+
+    if (service.visible === "on") {
+      service.visible = "off";
+      await service.save();
+    } else {
+      service.visible = "on";
+      await service.save();
+    }
+
     return res.status(201).json({
       message: "Successfully Enabled",
     });
@@ -69,9 +94,54 @@ async function handleBestSelling(req, res) {
   }
 }
 
+async function handleDeleteItems(req, res) {
+  try {
+    const { product_id } = req.params;
+    const product = await SERVICE.findByIdAndDelete(product_id);
+    if (!product) {
+      return res.status(404).json({ error: "Cannot Find Products" });
+    }
+    return res.status(200).json({ message: "Product Deleted Successfully" });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to Delete Product" });
+  }
+}
+
+async function handleEditItems(req, res) {
+  try {
+    const { product_id } = req.params;
+    const { name, subtitle, description, amount, visible, best_selling } =
+      req.body;
+
+    console.log("photo file:", req.file); // if any
+
+    const product = await SERVICE.findById(product_id);
+    if (!product) {
+      return res.status(404).json({ error: "product not found" });
+    }
+
+    if (name) product.name = name;
+    if (subtitle) product.subtitle = subtitle;
+    if (description) product.description = description;
+    if (amount) product.amount = amount;
+    if (visible) product.visible = visible;
+    if (best_selling) product.best_selling = best_selling;
+
+    await product.save();
+
+    return res.status(200).json({ message: "Product updated successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Failed to update Product" });
+  }
+}
+
 module.exports = {
+  handleGetSpecificItems,
   handleGenerateNewService,
   handleDisableItems,
   handleEnableItems,
   handleBestSelling,
+  handleDeleteItems,
+  handleEditItems,
 };
