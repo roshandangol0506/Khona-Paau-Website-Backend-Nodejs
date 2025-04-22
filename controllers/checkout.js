@@ -17,6 +17,40 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+async function handleGetCheckoutLength(req, res) {
+  try {
+    const checkout = await Checkout.find();
+
+    if (!checkout) {
+      return res.status(404).json({ error: "Cannot Find Checkout" });
+    }
+
+    const checkoutlength = checkout.length;
+
+    return res
+      .status(200)
+      .send({ success: true, msg: "Get Success", data: checkoutlength });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to Fetch Checkout" });
+  }
+}
+
+async function handleGetAllCheckouts(req, res) {
+  try {
+    const checkout = await Checkout.find()
+      .populate("service_id")
+      .populate("user_id");
+    if (!checkout) {
+      return res.status(404).json({ error: "Cannot Find Checkout" });
+    }
+    return res
+      .status(200)
+      .send({ success: true, msg: "Get Success", data: checkout });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to Fetch Checkout" });
+  }
+}
+
 async function handleGenerateCheckout(req, res) {
   let allcheckout = await Checkout.find({ user_id: req.user.id }).populate(
     "service_id"
@@ -145,4 +179,31 @@ async function handleGenerateCheckout(req, res) {
   // }
 }
 
-module.exports = { handleGenerateCheckout };
+async function handleChangeStatus(req, res) {
+  try {
+    const checkout = await Checkout.findById(req.params.checkout_id);
+    const { status } = req.body;
+
+    if (!checkout) {
+      return res.status(404).json({ error: "checkout not found" });
+    }
+
+    if (status) checkout.status = status;
+
+    await checkout.save();
+
+    return res.status(200).json({
+      message: `Status updated to ${checkout.status}`,
+    });
+  } catch (error) {
+    console.error("Error toggling Status:", error);
+    return res.status(500).json({ error: "Failed to toggle Status" });
+  }
+}
+
+module.exports = {
+  handleGenerateCheckout,
+  handleGetCheckoutLength,
+  handleGetAllCheckouts,
+  handleChangeStatus,
+};

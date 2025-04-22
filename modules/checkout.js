@@ -19,6 +19,11 @@ const newcheckout = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  status: {
+    type: String,
+    enum: ["completed", "processing", "shipped", "cancelled"],
+    default: "processing",
+  },
 });
 
 const Checkout = mongoose.model("Checkout", newcheckout);

@@ -1,5 +1,20 @@
 const SERVICE = require("../modules/service");
 
+async function handleGetServiceLength(req, res) {
+  try {
+    const service = await SERVICE.find();
+    if (!service) {
+      return res.status(404).json({ error: "Cannot Find service" });
+    }
+    const servicelength = service.length;
+    res
+      .status(200)
+      .send({ success: true, msg: "Get Success", data: servicelength });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to Fetch service" });
+  }
+}
+
 async function handleGetSpecificItems(req, res) {
   try {
     const { product_id } = req.params;
@@ -144,4 +159,5 @@ module.exports = {
   handleBestSelling,
   handleDeleteItems,
   handleEditItems,
+  handleGetServiceLength,
 };

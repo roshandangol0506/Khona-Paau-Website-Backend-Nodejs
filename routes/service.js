@@ -9,6 +9,7 @@ const {
   handleDeleteItems,
   handleGetSpecificItems,
   handleEditItems,
+  handleGetServiceLength,
 } = require("../controllers/service");
 
 const router = express.Router();
@@ -22,5 +23,6 @@ router.put("/enableitem/:id", handleEnableItems);
 router.put("/bestselling/:id", handleBestSelling);
 router.delete("/deleteitem/:product_id", handleDeleteItems);
 router.put("/edititem/:product_id", upload.single("photo"), handleEditItems);
+router.get("/servicelength", handleGetServiceLength);
 
 module.exports = router;

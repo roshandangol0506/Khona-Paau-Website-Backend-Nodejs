@@ -6,6 +6,7 @@ const {
   handleDeleteTeams,
   handleEditTeams,
   handleGetSpecificTeam,
+  handleGetTeamLength,
 } = require("../controllers/team");
 const multer = require("multer");
 
@@ -15,5 +16,6 @@ router.get("/team/:team_id", handleGetSpecificTeam);
 router.post("/", handleGenerateNewTeam);
 router.delete("/deleteteams/:team_id", handleDeleteTeams);
 router.put("/editteam/:team_id", upload.single("photo"), handleEditTeams);
+router.get("/teamlength", handleGetTeamLength);
 
 module.exports = router;

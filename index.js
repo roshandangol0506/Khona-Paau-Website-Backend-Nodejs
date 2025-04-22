@@ -15,6 +15,7 @@ const staticRouter = require("./routes/staticRouter");
 const viewuserRouter = require("./routes/viewuser");
 const uploadRouter = require("./routes/uploadProfileImage");
 const apiRouter = require("./routes/auth");
+const revenueRouter = require("./routes/revenue");
 const main = require("./routes/main");
 const setupGoogleAuth = require("./controllers/googleauth");
 const cors = require("cors");
@@ -90,9 +91,10 @@ app.use("/url", viewuserRouter);
 app.use("/", uploadRouter);
 app.use("/", main);
 app.use("/api", apiRouter);
+app.use("/", revenueRouter);
 
 app.use((req, res, next) => {
-  res.locals.user = req.user || null; 
+  res.locals.user = req.user || null;
   next();
 });
 

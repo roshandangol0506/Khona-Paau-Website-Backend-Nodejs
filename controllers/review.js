@@ -1,20 +1,19 @@
 const REVIEW = require("../modules/review");
 
-// async function handleGenerateNewReview(req, res) {
-//   try {
-//     const { name, review, profilepic } = req.body;
-//     await REVIEW.create({
-//       name,
-//       review,
-//       profilepic,
-//     });
-//     return res.redirect("/");
-//   } catch (error) {
-//     return res.render("uploadreview", {
-//       error: "An error occurred during uploading Review",
-//     });
-//   }
-// }
+async function handleGetReviewLength(req, res) {
+  try {
+    const review = await REVIEW.find();
+    if (!review) {
+      return res.status(404).json({ error: "Cannot Find Review" });
+    }
+    const reviewlength = review.length;
+    res
+      .status(200)
+      .send({ success: true, msg: "Get Success", data: reviewlength });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to Fetch Review" });
+  }
+}
 
 async function handleGetSpecificReview(req, res) {
   try {
@@ -97,4 +96,5 @@ module.exports = {
   handleGenerateNewReview,
   handleDeleteReviews,
   handleEditReview,
+  handleGetReviewLength,
 };

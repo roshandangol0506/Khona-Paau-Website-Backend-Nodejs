@@ -1,14 +1,19 @@
 const TEAM = require("../modules/team");
 
-// async function handleGenerateNewTeam(req, res) {
-//     const { name, profession, teamimage } = req.body;
-//     await TEAM.create({
-//         name,
-//         profession,
-//         teamimage,
-//     });
-//     return res.redirect('/');
-// }
+async function handleGetTeamLength(req, res) {
+  try {
+    const team = await TEAM.find();
+    if (!team) {
+      return res.status(404).json({ error: "Cannot Find team" });
+    }
+    const teamlength = team.length;
+    res
+      .status(200)
+      .send({ success: true, msg: "Get Success", data: teamlength });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to Fetch team" });
+  }
+}
 
 async function handleGetSpecificTeam(req, res) {
   try {
@@ -84,4 +89,5 @@ module.exports = {
   handleDeleteTeams,
   handleEditTeams,
   handleGetSpecificTeam,
+  handleGetTeamLength,
 };

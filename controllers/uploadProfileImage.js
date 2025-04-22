@@ -52,20 +52,6 @@ const teamImageStorage = multer.diskStorage({
 
 const uploadTeamImage = multer({ storage: teamImageStorage });
 
-// async function handleUploadImage(req, res) {
-//   try {
-//     const TeamImageLocation = req.file.filename;
-
-//     req.body.teamimage = TeamImageLocation;
-
-//     return handleGenerateNewTeam(req, res);
-//   } catch (error) {
-//     return res.render("uploadteamimages", {
-//       error: "An error occurred during uploading teams.",
-//     });
-//   }
-// }
-
 async function handleUploadImage(req, res) {
   try {
     if (!req.file) {
@@ -135,14 +121,43 @@ async function handleUploadItemsImage(req, res) {
   }
 }
 
+
+const logoStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    return cb(null, "./logo");
+  },
+  filename: function (req, file, cb) {
+    return cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const uploadlogoImage = multer({ storage: logoStorage });
+
+async function handleUploadLogo(req, res) {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const LogoLocation = req.file.filename;
+    req.body.logo = LogoLocation;
+
+    return handleUpdateGeneralSetting(req, res);
+  } catch (error) {
+    return res.status(500).json({ error: "An error occurred during upload." });
+  }
+}
+
 module.exports = {
   upload,
   uploadTeamImage,
   uploadProfileImage,
   uploadReviewImage,
   uploadItemsImage,
+  uploadlogoImage,
   handleUploadItemsImage,
   handleUploadProfileImage,
   handleUploadImage,
   handleUploadReviewImage,
+  handleUploadLogo,
 };
