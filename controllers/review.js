@@ -70,9 +70,6 @@ async function handleEditReview(req, res) {
 
     console.log("photo file:", req.file);
 
-    console.log("name", name);
-    console.log("rating", rating);
-    console.log("review", review);
     // if any
 
     const Review = await REVIEW.findById(review_id);

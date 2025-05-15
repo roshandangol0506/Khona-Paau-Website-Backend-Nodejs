@@ -24,6 +24,14 @@ const newcheckout = new mongoose.Schema({
     enum: ["completed", "processing", "shipped", "cancelled"],
     default: "processing",
   },
+  location: {
+    type: String,
+    required: true,
+  },
+  phoneno: {
+    type: String,
+    required: true,
+  },
 });
 
 const Checkout = mongoose.model("Checkout", newcheckout);

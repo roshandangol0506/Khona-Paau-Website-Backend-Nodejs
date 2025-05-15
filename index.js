@@ -16,6 +16,7 @@ const viewuserRouter = require("./routes/viewuser");
 const uploadRouter = require("./routes/uploadProfileImage");
 const apiRouter = require("./routes/auth");
 const revenueRouter = require("./routes/revenue");
+const generalsettingRouter = require("./routes/generalsetting");
 const main = require("./routes/main");
 const setupGoogleAuth = require("./controllers/googleauth");
 const cors = require("cors");
@@ -92,6 +93,7 @@ app.use("/", uploadRouter);
 app.use("/", main);
 app.use("/api", apiRouter);
 app.use("/", revenueRouter);
+app.use("/", generalsettingRouter);
 
 app.use((req, res, next) => {
   res.locals.user = req.user || null;
@@ -103,4 +105,5 @@ app.use("/items", express.static(path.resolve("./items")));
 app.use("/profileImage", express.static(path.resolve("./profileImage")));
 app.use("/reviews", express.static(path.resolve("./reviews")));
 app.use("/gmailprofile", express.static(path.resolve("./gmailprofile")));
+app.use("/logo", express.static(path.resolve("./logo")));
 app.listen(PORT, () => console.log(`PORT: ${PORT}`));

@@ -1,8 +1,14 @@
 const express = require("express");
-const { handleUpdateGeneralSetting } = require("../controllers/generalsetting");
+const {
+  handleGetGeneralSetting,
+  handleEditGeneralSetting,
+} = require("../controllers/generalsetting");
+const multer = require("multer");
 
 const router = express.Router();
 
-router.post("/generalsetting", handleUpdateGeneralSetting);
+const upload = multer({ storage: multer.memoryStorage() });
+
+router.get("/generalsetting", handleGetGeneralSetting);
 
 module.exports = router;

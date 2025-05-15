@@ -125,10 +125,15 @@ async function handleDeleteItems(req, res) {
 async function handleEditItems(req, res) {
   try {
     const { product_id } = req.params;
-    const { name, subtitle, description, amount, visible, best_selling } =
-      req.body;
-
-    console.log("photo file:", req.file); // if any
+    const {
+      name,
+      subtitle,
+      description,
+      amount,
+      visible,
+      best_selling,
+      photo,
+    } = req.body;
 
     const product = await SERVICE.findById(product_id);
     if (!product) {
@@ -141,6 +146,7 @@ async function handleEditItems(req, res) {
     if (amount) product.amount = amount;
     if (visible) product.visible = visible;
     if (best_selling) product.best_selling = best_selling;
+    if (photo) product.photo = photo;
 
     await product.save();
 

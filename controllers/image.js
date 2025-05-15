@@ -79,15 +79,22 @@ async function handlegetreviews(req, res) {
 }
 
 async function handleCheckout(req, res) {
-  let allservices = await SERVICE.find({});
-  let allcheckout = await Checkout.find({ user_id: req.user._id }).populate(
-    "service_id"
-  );
+  try {
+    let allservices = await SERVICE.find({});
+    let allcheckout = await Checkout.find({ user_id: req.user._id }).populate(
+      "service_id"
+    );
 
-  res.status(200).send({
-    checkout: allcheckout,
-    service: allservices,
-  });
+    if (!allcheckout) {
+      return res.status(404).json({ error: "Cannot Find Checkout" });
+    }
+
+    return res
+      .status(200)
+      .send({ success: true, msg: "Get Success", checkout: allcheckout });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to Fetch Checkout" });
+  }
 }
 
 module.exports = {

@@ -2,7 +2,14 @@ const multer = require("multer");
 const { handleGenerateNewUrl } = require("../controllers/url");
 const { handleGenerateNewTeam } = require("../controllers/team");
 const { handleGenerateNewReview } = require("../controllers/review");
-const { handleGenerateNewService } = require("../controllers/service");
+const {
+  handleGenerateNewService,
+  handleEditItems,
+} = require("../controllers/service");
+const {
+  handleUpdateGeneralSetting,
+  handleEditGeneralSetting,
+} = require("../controllers/generalsetting");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -121,7 +128,6 @@ async function handleUploadItemsImage(req, res) {
   }
 }
 
-
 const logoStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     return cb(null, "./logo");
@@ -148,6 +154,32 @@ async function handleUploadLogo(req, res) {
   }
 }
 
+async function handleEditProduct(req, res) {
+  try {
+    if (req.file) {
+      const itemsImageLocation = req.file.filename;
+      req.body.photo = itemsImageLocation;
+    }
+
+    return handleEditItems(req, res);
+  } catch (error) {
+    return res.status(500).json({ error: "An error occurred during upload." });
+  }
+}
+
+async function handleEditLogo(req, res) {
+  try {
+    if (req.file) {
+      const LogoLocation = req.file.filename;
+      req.body.logo = LogoLocation;
+    }
+
+    return handleEditGeneralSetting(req, res);
+  } catch (error) {
+    return res.status(500).json({ error: "An error occurred during upload." });
+  }
+}
+
 module.exports = {
   upload,
   uploadTeamImage,
@@ -160,4 +192,6 @@ module.exports = {
   handleUploadImage,
   handleUploadReviewImage,
   handleUploadLogo,
+  handleEditProduct,
+  handleEditLogo,
 };

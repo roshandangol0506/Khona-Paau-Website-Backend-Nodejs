@@ -6,13 +6,31 @@ const newUser = new mongoose.Schema(
       type: String,
       required: true,
     },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     email: {
       type: String,
       required: true,
       unique: true,
     },
+    phoneno: {
+      type: Number,
+      required: true,
+    },
     password: {
       type: String,
+      required: true,
+    },
+    twoFactorialAuthentication: {
+      type: Boolean,
+      enum: [true, false],
+      default: false,
+    },
+    sessionManagement: {
+      type: Number,
       required: true,
     },
     role: { type: String, default: "admin" },

@@ -90,6 +90,75 @@ async function handleAdminSignup(req, res) {
   }
 }
 
+async function handleGetAdmin(req, res) {
+  try {
+    const admin = await Admin.findOne().select(
+      "-password -_id -createdAt -updatedAt"
+    );
+    if (!admin) {
+      return res.status(400).json({ error: "Cannot Find Admin" });
+    }
+    res.status(200).send({ success: true, msg: "Get Success", data: admin });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to Fetch Admin" });
+  }
+}
+
+async function handleEditAdmin(req, res) {
+  try {
+    const { name, username, email, phoneno } = req.body;
+
+    const admin = await Admin.findOne();
+    if (!admin) {
+      return res.status(400).json({ error: "Cannot Find Admin" });
+    }
+    if (name) admin.name = name;
+    if (username) admin.username = username;
+    if (email) admin.email = email;
+    if (phoneno) admin.phoneno = phoneno;
+
+    await admin.save();
+    return res.status(200).json({ message: "Admin updated successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Failed to update Admin" });
+  }
+}
+
+async function handleChangeUserPassword(req, res) {
+  try {
+    const {
+      currentPassword,
+      newPassword,
+      twoFactorialAuthentication,
+      sessionManagement,
+    } = req.body;
+
+    const admin = await Admin.findOne();
+    if (!admin) {
+      console.log("admin not found");
+      return res.status(404).json({ error: "Admin not found" });
+    }
+
+    if (admin.password !== currentPassword) {
+      return res.status(401).json({ error: "Invalid current password" });
+    }
+
+    if (newPassword) admin.password = newPassword;
+    if (twoFactorialAuthentication)
+      admin.twoFactorialAuthentication = twoFactorialAuthentication;
+    if (sessionManagement) admin.sessionManagement = sessionManagement;
+    await admin.save();
+
+    return res
+      .status(200)
+      .json({ message: "Admin password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    return res.status(500).json({ error: "Failed to update Admin password" });
+  }
+}
+
 async function handleUserLogout(req, res) {
   res.clearCookie("uid");
   return res.status(200).json({ message: "Logged out Successfully" });
@@ -101,4 +170,7 @@ module.exports = {
   handleUserLogin,
   handleAdminLogin,
   handleUserLogout,
+  handleGetAdmin,
+  handleEditAdmin,
+  handleChangeUserPassword,
 };

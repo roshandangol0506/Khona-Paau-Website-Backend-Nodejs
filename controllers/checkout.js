@@ -78,6 +78,8 @@ async function handleGenerateCheckout(req, res) {
       quantity:
         selectedItems.find((item) => item.cart_id === cartItem._id.toString())
           ?.quantity || 1,
+      location: location,
+      phoneno: phoneno,
     }));
 
     await Checkout.insertMany(checkoutItems);

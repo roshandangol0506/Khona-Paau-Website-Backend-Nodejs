@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const newgeneralsetting = new mongoose.Schema(
   {
     _id: {
-      type: String,
-      default: "singleton",
+      type: mongoose.Schema.Types.ObjectId,
+      default: "680731dc89bdf730b095ecfd",
     },
     name: {
       type: String,
@@ -29,8 +29,13 @@ const newgeneralsetting = new mongoose.Schema(
     },
     timezone: {
       type: String,
-      enum: ["kathmandu", "america", "australia"],
+      enum: ["kathmandu", "america", "australia", "india"],
       default: "kathmandu",
+    },
+    maintenance_mode: {
+      type: Boolean,
+      enum: [true, false],
+      default: false,
     },
   },
   { timestamps: true }
